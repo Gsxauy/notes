@@ -1,0 +1,9 @@
+{
+  "name": "gsx_notes",
+  "version": "1.0.0",
+  "description": "好记性不如 Markdown~",
+  "main": "index.js",
+  "repository": "git@github.com:Gsxauy/notes.git",
+  "author": "知歧。",
+  "license": "MIT"
+}
