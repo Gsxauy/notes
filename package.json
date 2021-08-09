@@ -3,7 +3,20 @@
   "version": "1.0.0",
   "description": "好记性不如 Markdown~",
   "main": "index.js",
+  "scripts": {
+    "dev": "gulp --watch && vuepress dev ./docs/",
+    "build": "gulp"
+  },
   "repository": "git@github.com:Gsxauy/notes.git",
   "author": "知歧。",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-rename": "^2.0.0",
+    "gulp-replace": "^1.1.3",
+    "minimist": "^1.2.5",
+    "ora": "^5.4.0",
+    "through2": "^4.0.2",
+    "vuepress": "^1.8.2"
+  }
 }
