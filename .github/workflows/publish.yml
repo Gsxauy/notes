@@ -1,0 +1,82 @@
+name: 打包应用并上传至阿里云
+
+# 将来 push 代码的时候 哪个分支 会收到影响
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  # 创建
+  build:
+    # runs-on 制定 job 任务运行所需要的 虚拟机环境 (必填字段)
+    runs-on: Ubuntu 16.04 64位
+    # 若干子步骤
+    steps:
+      # 获取源码
+      - name: 迁出代码
+        # 使用 actions(第三方) 库  actions/checkout 获取源码
+        uses: actions/checkout@master
+
+      # 安装Node
+      - name: 安装 Nodejs
+        # 使用 actions 库  actions/setup-node 安装 node
+        uses: actions/setup-node@v1
+        with:
+          # vite 的环境 需要 大于 14
+          node-version: 14.0.0
+      
+      # 安装 yarn
+      - name: 安装yarn
+        run: npm install yarn -G
+
+      # 安装依赖
+      - name: 安装依赖
+        run: yarn
+
+      # 打包
+      - name: 打包
+        run: yarn build
+
+      # 上传阿里云
+      - name: 发布阿里云
+        # 配置的是 ssh 命令行的方式
+        uses: easingthemes/ssh-deploy@v2.1.1
+        env:
+          # 私钥 将本地的 ssh 放置在 github 中 然后 改成 PRIVATE_KEY 的名字
+          # 其实就是让 虚拟机 模拟 开发机 的身份 进行链接
+          SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          # scp参数
+          ARGS: "-avzr --delete"
+          # 源目录
+          SOURCE: "dist"
+          # 服务器ip
+          REMOTE_HOST: "121.89.237.64"
+          # 用户 root
+          REMOTE_USER: "root"
+          # 目标地址
+          TARGET: "/www/var/code-test"
+
+
+          # 在 github 当前项目下设置 私钥选项 setting -> secrets 项目中去部署的
+          # 和 PRIVATE_KEY 一一对应
+          # cat .ssh/id_rsa
+
+          # 在阿里云 服务器上 配置 nginx
+          # nginx.conf 这个是总配置
+          # cd /etc/nginx/sites-enabled
+          # vi vue-in-action
+
+          # {
+          #   server {
+          #     listen 8080;
+          #     server_name xxx;
+          #     location / {
+          #       root /xxx/xxx;
+          #       index index.html index.htm;
+          #     }
+          #   }
+          # }
+          # nginx -s reload 命令 进行重启
+
+          # 在 Actions 里面 可以查看到 并且部署
